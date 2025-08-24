@@ -12,6 +12,11 @@ calculator/
 │   ├── main.js         # Modular JavaScript with clear sections
 │   ├── favicon.svg     # Theme-reactive calculator icon
 │   └── favicon.ico     # Fallback icon for older browsers
+├── docs/
+│   └── learning-journey/    # Development process documentation
+│       ├── 00-project-overview-and-learning-goals.md
+│       ├── 08.5-critical-refactor-single-source-of-truth.md
+│       └── 11-final-architecture-and-complete-features.md
 ├── .gitignore          # Git ignore rules
 ├── CLAUDE.md           # AI assistant guidelines
 ├── README.md           # Project documentation
@@ -86,6 +91,17 @@ This project uses **vanilla JavaScript, HTML, and CSS** without any build tools 
 -   **Data-driven Architecture** - Button configuration centralized for easy maintenance
 -   **Algorithmic Key Transformation** - Smart numpad handling without duplication
 -   **Progressive Enhancement** - Clean separation of concerns
+
+## Learning Journey Documentation
+
+The `/docs/learning-journey/` directory contains detailed documentation of the development process, architectural decisions, and JavaScript fundamentals explored during this project's implementation. These documents trace the evolution from basic implementation to clean architecture, including the critical refactoring that led to the current single source of truth design.
+
+**Key Documents:**
+- `00-project-overview-and-learning-goals.md` - Comprehensive project structure and learning objectives  
+- `08.5-critical-refactor-single-source-of-truth.md` - Critical architectural evolution and design principles
+- `11-final-architecture-and-complete-features.md` - Complete feature overview and final implementation
+
+These are primarily personal learning documentation for reviewing fundamental concepts and architectural decision-making.
 
 ## Browser Support
 

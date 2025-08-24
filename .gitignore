@@ -17,6 +17,7 @@
 .DS_Store
 *.pem
 tmp/
+.claude/
 CLAUDE.md
 
 # debug
