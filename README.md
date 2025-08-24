@@ -1,6 +1,6 @@
 # Calculator Project
 
-A vanilla JavaScript calculator built as the final project for The Odin Project's Foundations Course.
+A fully functional vanilla JavaScript calculator built as the final project for The Odin Project's Foundations Course. Features progressive equation display, comprehensive keyboard support, and a clean architectural design.
 
 ## Project Structure
 
@@ -37,36 +37,42 @@ npx serve src
 
 Then navigate to `http://localhost:8000` in your browser.
 
-## Current Features
+## Features
 
-### Implemented ✅
-- **Theme System**: Smart light/dark mode with localStorage persistence
-  - Respects system preference on first visit
-  - User choice overrides system preference
-  - Theme-reactive favicon that changes with theme
-  - Compact theme toggle button (36x36px) with smooth transitions
-- **Project Structure**: Clean, maintainable code organization
-  - Separated sections for different concerns
-  - Data-driven calculator button layout (array-based for easy maintenance)
-  - Modular function structure with clear separation
-- **UI Foundation**: Ready for calculator implementation
-  - CSS Grid layout prepared for calculator buttons
-  - Lucide icons integration (npm + CDN fallback)
-  - CSS variables for consistent theming
-  - Utility classes for spacing and visibility
-- **Developer Experience**:
-  - Clear code sections with dividers
-  - TODO placeholders for calculator functions
-  - Test container for verifying setup
+### Core Functionality ✅
 
-### To Implement 📝
-- Basic arithmetic operations (add, subtract, multiply, divide)
-- Calculator display and button functionality
-- Sequential operation handling
-- Clear and backspace functions
-- Decimal point support
-- Keyboard support
-- Error handling (division by zero, etc.)
+-   **Basic Arithmetic**: Add, subtract, multiply, divide operations
+-   **Progressive Equation Display**: Shows equation building in real-time (4 → 41 → 41+ → 41+8 → 41+8=49)
+-   **Sequential Operations**: Handles chained calculations (12+7-1=18)
+-   **Error Handling**: Division by zero protection and graceful error states
+-   **Memory Management**: Proper state tracking for complex calculations
+
+### Input Methods ✅
+
+-   **Mouse/Touch**: Click calculator buttons
+-   **Full Keyboard Support**:
+    -   Numbers: 0-9 keys and numpad
+    -   Operators: +, -, *, / (maps to ×, ÷)
+    -   Actions: Enter/NumpadEnter (=), Escape (AC), Delete/C (Clear), Backspace (←)
+    -   Decimal: . and NumpadDecimal
+
+### Advanced Features ✅
+
+-   **AC/C Button Functionality**:
+    -   AC (All Clear): Complete calculator reset
+    -   C (Clear): Context-aware entry clearing
+-   **Decimal Support**: Prevents multiple decimal points per number
+-   **Backspace**: Character-by-character removal
+-   **Smart Display**: Shows full equation context with results
+
+### UI/UX ✅
+
+-   **Theme System**: Smart light/dark mode with localStorage persistence
+    -   Respects system preference on first visit
+    -   User choice overrides system preference
+    -   Theme-reactive favicon that changes with theme
+-   **Visual Feedback**: Hover effects and button state transitions
+-   **Professional Styling**: Clean, modern calculator interface
 
 ## Development Approach
 
@@ -74,24 +80,15 @@ This project uses **vanilla JavaScript, HTML, and CSS** without any build tools 
 
 ### Key Design Decisions
 
-- **No `eval()` or `new Function()`** - Building safe expression evaluation
-- **Data-driven UI** - Calculator layout defined in JavaScript array for maintainability
-- **CSS Variables** - Easy theme customization and consistency
-- **Progressive Enhancement** - Works without JavaScript for basic display
-- **KISS Principle** - Simple, readable code over complex abstractions
+-   **No `eval()` or `new Function()`** - Custom safe expression evaluation
+-   **Single Source of Truth** - `CALCULATOR_BUTTONS` array drives all functionality
+-   **Event Delegation** - One listener for all buttons, better performance
+-   **Data-driven Architecture** - Button configuration centralized for easy maintenance
+-   **Algorithmic Key Transformation** - Smart numpad handling without duplication
+-   **Progressive Enhancement** - Clean separation of concerns
 
 ## Browser Support
 
-- Modern browsers (Chrome 80+, Firefox 75+, Safari 13+, Edge 80+)
-- Favicon: SVG with ICO fallback for older browsers
-- Theme detection: Uses CSS prefers-color-scheme media query
-
-## Testing
-
-Currently includes a test container to verify:
-- JavaScript is loading correctly
-- Event listeners are working
-- Theme system is functional
-- Icons are rendering properly
-
-The test container will be replaced with the calculator when implementation begins.
+-   Modern browsers (Chrome 80+, Firefox 75+, Safari 13+, Edge 80+)
+-   Favicon: SVG with ICO fallback for older browsers
+-   Theme detection: Uses CSS prefers-color-scheme media query

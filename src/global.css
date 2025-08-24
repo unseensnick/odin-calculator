@@ -702,6 +702,7 @@ body {
     background-color: var(--operator-button-hover);
 }
 
+.calculator-button--all-clear,
 .calculator-button--clear,
 .calculator-button--backspace {
     background-color: var(--special-button);
@@ -709,6 +710,7 @@ body {
     font-weight: 600;
 }
 
+.calculator-button--all-clear:hover,
 .calculator-button--clear:hover,
 .calculator-button--backspace:hover {
     background-color: var(--special-button-hover);

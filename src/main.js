@@ -99,9 +99,9 @@ function updateFavicon(isDark) {
 
 // Calculator button configuration (single source of truth)
 const CALCULATOR_BUTTONS = [
+    { value: "AC", type: "all-clear" },
     { value: "C", type: "clear" },
     { value: "←", type: "backspace" },
-    { value: "", type: "spacer" },
     { value: "÷", type: "operator" },
     { value: "7", type: "number" },
     { value: "8", type: "number" },
@@ -194,6 +194,35 @@ function updateDisplay(value) {
 }
 
 function clearCalculator() {
+    // C button - clears current entry only
+    if (shouldResetDisplay || currentEquation.includes("=")) {
+        // If we just got a result or pressed an operator, clear everything
+        firstNumber = null;
+        secondNumber = null;
+        currentOperator = null;
+        shouldResetDisplay = false;
+        currentEquation = "";
+        updateDisplay("0");
+    } else {
+        // Clear current number only, keep the operation
+        const parts = currentEquation.split(/[\+\-\×\÷]/);
+        if (parts.length > 1) {
+            // There's an operator, just clear the current number
+            const operatorMatch = currentEquation.match(/[\+\-\×\÷]/);
+            if (operatorMatch) {
+                currentEquation = currentEquation.substring(0, currentEquation.lastIndexOf(operatorMatch[0]) + 1);
+                shouldResetDisplay = true;
+            }
+        } else {
+            // No operator yet, clear everything
+            currentEquation = "";
+        }
+        updateDisplay(currentEquation || "0");
+    }
+}
+
+function handleAllClear() {
+    // AC button - clears everything completely
     firstNumber = null;
     secondNumber = null;
     currentOperator = null;
@@ -375,6 +404,9 @@ document.addEventListener("DOMContentLoaded", () => {
             case "decimal":
                 handleDecimal();
                 break;
+            case "all-clear":
+                handleAllClear();
+                break;
             case "clear":
                 clearCalculator();
                 break;
@@ -402,7 +434,10 @@ document.addEventListener("DOMContentLoaded", () => {
         "*": "×",
         "/": "÷",
         Enter: "=",
-        Escape: "C",
+        Escape: "AC",
+        Delete: "C",
+        c: "C",
+        C: "C",
         Backspace: "←",
         // Numpad keys
         NumpadDivide: "÷",
