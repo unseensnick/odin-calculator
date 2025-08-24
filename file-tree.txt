@@ -1,0 +1,14 @@
+ calculator/
+├── .gitignore
+├─] CLAUDE.md (ignored)
+├── README.md
+├─] node_modules/ (ignored)
+├── package-lock.json
+├── package.json
+├── src/
+│   ├── favicon.ico
+│   ├── favicon.svg
+│   ├── global.css
+│   ├── index.html
+│   └── main.js
+└─] tmp/ (ignored)

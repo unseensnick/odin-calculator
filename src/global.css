@@ -1,0 +1,251 @@
+/* ============================================================================
+   CSS VARIABLES & THEMES
+   ============================================================================ */
+
+:root {
+    --bg-primary: #f4f4f4;
+    --bg-secondary: white;
+    --text-primary: #333;
+    --text-secondary: #666;
+    --accent: #3498db;
+    --accent-hover: #2980b9;
+    --shadow: rgba(0, 0, 0, 0.1);
+    --output-bg: #ecf0f1;
+    --output-text: #27ae60;
+}
+
+[data-theme="dark"] {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2d2d2d;
+    --text-primary: #e0e0e0;
+    --text-secondary: #a0a0a0;
+    --accent: #5dade2;
+    --accent-hover: #3498db;
+    --shadow: rgba(0, 0, 0, 0.3);
+    --output-bg: #252525;
+    --output-text: #52c41a;
+}
+
+/* ============================================================================
+   RESET & BASE STYLES
+   ============================================================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.6;
+    color: var(--text-primary);
+    background-color: var(--bg-primary);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* ============================================================================
+   THEME TOGGLE
+   ============================================================================ */
+
+.theme-toggle {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--text-secondary);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.theme-toggle:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    transform: scale(1.1);
+}
+
+.theme-icon {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    color: var(--text-primary);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.theme-toggle:hover .theme-icon {
+    color: white;
+}
+
+.theme-icon--light {
+    opacity: 1;
+}
+
+.theme-icon--dark {
+    opacity: 0;
+}
+
+[data-theme="dark"] .theme-icon--light {
+    opacity: 0;
+}
+
+[data-theme="dark"] .theme-icon--dark {
+    opacity: 1;
+}
+
+/* ============================================================================
+   CALCULATOR STYLES
+   ============================================================================ */
+
+.calculator {
+    /* TODO: Add calculator container styles */
+}
+
+.calculator-display {
+    /* TODO: Add display styles */
+}
+
+.calculator-buttons {
+    /* TODO: Add button grid styles */
+}
+
+.calculator-button {
+    /* TODO: Add individual button styles */
+}
+
+.calculator-button--operator {
+    /* TODO: Add operator button styles */
+}
+
+.calculator-button--equals {
+    /* TODO: Add equals button styles */
+}
+
+.calculator-button--clear {
+    /* TODO: Add clear button styles */
+}
+
+.calculator-button--zero {
+    /* TODO: Add zero button styles (spans 2 columns) */
+}
+
+/* ============================================================================
+   TEST/DEMO CONTAINER (Remove when calculator is implemented)
+   ============================================================================ */
+
+.container {
+    background: var(--bg-secondary);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px var(--shadow);
+    text-align: center;
+    min-width: 300px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+h1 {
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+p {
+    margin-bottom: 1.5rem;
+    color: var(--text-secondary);
+}
+
+button {
+    background-color: var(--accent);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: var(--accent-hover);
+}
+
+button:active {
+    transform: translateY(1px);
+}
+
+#output {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background-color: var(--output-bg);
+    border-radius: 4px;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: var(--output-text);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* ============================================================================
+   UTILITY CLASSES
+   ============================================================================ */
+
+.hidden {
+    display: none;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.mt-1 {
+    margin-top: 0.5rem;
+}
+.mt-2 {
+    margin-top: 1rem;
+}
+.mt-3 {
+    margin-top: 1.5rem;
+}
+.mt-4 {
+    margin-top: 2rem;
+}
+
+.mb-1 {
+    margin-bottom: 0.5rem;
+}
+.mb-2 {
+    margin-bottom: 1rem;
+}
+.mb-3 {
+    margin-bottom: 1.5rem;
+}
+.mb-4 {
+    margin-bottom: 2rem;
+}
+
+/* ============================================================================
+   RESPONSIVE DESIGN
+   ============================================================================ */
+
+@media (max-width: 480px) {
+    .calculator {
+        /* TODO: Add mobile responsive styles */
+    }
+}
