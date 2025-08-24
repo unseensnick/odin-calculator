@@ -720,66 +720,6 @@ body {
     padding-left: 1.5rem;
 }
 
-/* ============================================================================
-   TEST/DEMO CONTAINER (Remove when calculator is implemented)
-   ============================================================================ */
-
-.container {
-    background-color: var(--card);
-    padding: 2rem;
-    border-radius: calc(var(--radius) + 4px);
-    box-shadow: var(--shadow-lg);
-    text-align: center;
-    border: 1px solid var(--border);
-    width: 100%;
-    max-width: 280px;
-}
-
-.container h1 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    color: var(--foreground);
-}
-
-.container p {
-    margin-bottom: 1rem;
-    color: var(--muted-foreground);
-    font-size: 0.875rem;
-}
-
-.container button {
-    background-color: var(--primary);
-    color: var(--primary-foreground);
-    padding: 0.75rem 1rem;
-    border-radius: var(--radius);
-    font-weight: 500;
-    transition: all 0.15s ease-in-out;
-    cursor: pointer;
-    border: none;
-}
-
-.container button:hover {
-    opacity: 0.9;
-}
-
-.container button:active {
-    transform: translateY(1px);
-}
-
-#output {
-    margin-top: 1rem;
-    padding: 1rem;
-    border-radius: var(--radius);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    transition: all 0.15s ease-in-out;
-    min-height: 3rem;
-    background-color: var(--calculator-display);
-    color: var(--calculator-display-text);
-}
 
 /* ============================================================================
    RESPONSIVE BREAKPOINTS - MOBILE FIRST
@@ -822,18 +762,6 @@ body {
         font-size: 1.25rem;
     }
 
-    .container {
-        max-width: 320px;
-        padding: 2.5rem;
-    }
-
-    .container h1 {
-        font-size: 1.875rem;
-    }
-
-    .container p {
-        font-size: 1rem;
-    }
 }
 
 /* Desktop: 1024px and up */
@@ -875,10 +803,6 @@ body {
         font-size: 1.375rem;
     }
 
-    .container {
-        max-width: 360px;
-        padding: 3rem;
-    }
 }
 
 /* Large Desktop: 1280px and up */
@@ -887,7 +811,4 @@ body {
         max-width: 400px;
     }
 
-    .container {
-        max-width: 400px;
-    }
 }

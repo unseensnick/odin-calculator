@@ -1,22 +1,22 @@
-console.log('JavaScript loaded successfully!');
+console.log("JavaScript loaded successfully!");
 
 // ============================================================================
 // DEPENDENCIES & IMPORTS
 // ============================================================================
 
 // Import Lucide icons - try local npm version first
-import('../node_modules/lucide/dist/umd/lucide.js')
+import("../node_modules/lucide/dist/umd/lucide.js")
     .then(() => {
-        console.log('Lucide loaded from npm');
+        console.log("Lucide loaded from npm");
         lucide.createIcons();
     })
     .catch(() => {
         // Fallback to CDN if local version not found
-        console.log('Loading Lucide from CDN');
-        const script = document.createElement('script');
-        script.src = 'https://unpkg.com/lucide@latest/dist/umd/lucide.js';
+        console.log("Loading Lucide from CDN");
+        const script = document.createElement("script");
+        script.src = "https://unpkg.com/lucide@latest/dist/umd/lucide.js";
         script.onload = () => {
-            console.log('Lucide loaded from CDN');
+            console.log("Lucide loaded from CDN");
             lucide.createIcons();
         };
         document.head.appendChild(script);
@@ -29,88 +29,96 @@ import('../node_modules/lucide/dist/umd/lucide.js')
 // Get current theme (user preference or system default)
 function getTheme() {
     // Check if user has manually set a theme
-    const userTheme = localStorage.getItem('userTheme');
+    const userTheme = localStorage.getItem("userTheme");
     if (userTheme) {
         return userTheme;
     }
     // Otherwise use system preference
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    return window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
 }
 
 // Set theme
 function setTheme(theme, isUserAction = false) {
     if (isUserAction) {
         // User manually changed theme, store their preference
-        localStorage.setItem('userTheme', theme);
+        localStorage.setItem("userTheme", theme);
     }
-    
-    document.documentElement.setAttribute('data-theme', theme);
-    updateFavicon(theme === 'dark');
+
+    document.documentElement.setAttribute("data-theme", theme);
+    updateFavicon(theme === "dark");
 }
 
 // Toggle between light and dark themes
 function toggleTheme() {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    const currentTheme = document.documentElement.getAttribute("data-theme");
+    const newTheme = currentTheme === "dark" ? "light" : "dark";
     setTheme(newTheme, true);
     return newTheme;
 }
 
 // Update favicon based on theme
 function updateFavicon(isDark) {
-    fetch('favicon.svg')
-        .then(response => response.text())
-        .then(svgText => {
+    fetch("favicon.svg")
+        .then((response) => response.text())
+        .then((svgText) => {
             const parser = new DOMParser();
-            const svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
-            const gElement = svgDoc.querySelector('g');
-            
-            gElement.setAttribute('fill', isDark ? '#ffffff' : '#000000');
-            
-            const svg = svgDoc.querySelector('svg');
-            const rect = svgDoc.createElementNS('http://www.w3.org/2000/svg', 'rect');
-            rect.setAttribute('width', '512');
-            rect.setAttribute('height', '512');
-            rect.setAttribute('fill', isDark ? '#1a1a1a' : '#f0f0f0');
+            const svgDoc = parser.parseFromString(svgText, "image/svg+xml");
+            const gElement = svgDoc.querySelector("g");
+
+            gElement.setAttribute("fill", isDark ? "#ffffff" : "#000000");
+
+            const svg = svgDoc.querySelector("svg");
+            const rect = svgDoc.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "rect"
+            );
+            rect.setAttribute("width", "512");
+            rect.setAttribute("height", "512");
+            rect.setAttribute("fill", isDark ? "#1a1a1a" : "#f0f0f0");
             svg.insertBefore(rect, svg.firstChild);
-            
+
             const serializer = new XMLSerializer();
             const svgString = serializer.serializeToString(svgDoc);
-            const dataUrl = `data:image/svg+xml,${encodeURIComponent(svgString)}`;
-            
+            const dataUrl = `data:image/svg+xml,${encodeURIComponent(
+                svgString
+            )}`;
+
             const favicon = document.querySelector("link[rel='icon']");
             if (favicon) {
                 favicon.href = dataUrl;
             }
         })
-        .catch(err => console.error('Failed to update favicon:', err));
+        .catch((err) => console.error("Failed to update favicon:", err));
 }
 
 // ============================================================================
 // CALCULATOR LOGIC
 // ============================================================================
 
-// Calculator button layout - much easier to maintain!
-const CALCULATOR_LAYOUT = [
-    ['C', '←', '÷'],
-    ['7', '8', '9', '×'],
-    ['4', '5', '6', '-'],
-    ['1', '2', '3', '+'],
-    ['0', '.', '=']
+// Calculator button configuration (single source of truth)
+const CALCULATOR_BUTTONS = [
+    { value: "C", type: "clear" },
+    { value: "←", type: "backspace" },
+    { value: "", type: "spacer" },
+    { value: "÷", type: "operator" },
+    { value: "7", type: "number" },
+    { value: "8", type: "number" },
+    { value: "9", type: "number" },
+    { value: "×", type: "operator" },
+    { value: "4", type: "number" },
+    { value: "5", type: "number" },
+    { value: "6", type: "number" },
+    { value: "-", type: "operator" },
+    { value: "1", type: "number" },
+    { value: "2", type: "number" },
+    { value: "3", type: "number" },
+    { value: "+", type: "operator" },
+    { value: "0", type: "zero" },
+    { value: ".", type: "decimal" },
+    { value: "=", type: "equals" },
 ];
-
-// Button type mapping for styling
-const BUTTON_TYPES = {
-    'C': 'clear',
-    '←': 'backspace',
-    '÷': 'operator',
-    '×': 'operator',
-    '-': 'operator',
-    '+': 'operator',
-    '=': 'equals',
-    '.': 'decimal',
-    '0': 'zero'
-};
 
 // Calculator state variables
 let firstNumber = null;
@@ -120,26 +128,26 @@ let shouldResetDisplay = false;
 
 // Function to generate calculator buttons
 function generateCalculatorButtons() {
-    const container = document.getElementById('calculator-buttons');
+    const container = document.getElementById("calculator-buttons");
     if (!container) return;
-    
-    CALCULATOR_LAYOUT.forEach(row => {
-        row.forEach(btnText => {
-            const button = document.createElement('button');
-            button.textContent = btnText;
-            button.className = 'calculator-button';
-            
-            // Add type-specific class
-            const type = BUTTON_TYPES[btnText];
-            if (type) {
-                button.classList.add(`calculator-button--${type}`);
-            }
-            
-            // Add data attribute for easier event handling
-            button.dataset.value = btnText;
-            
-            container.appendChild(button);
-        });
+
+    CALCULATOR_BUTTONS.forEach((btnConfig) => {
+        if (btnConfig.type === "spacer") {
+            // Create invisible placeholder for grid alignment
+            const placeholder = document.createElement("div");
+            container.appendChild(placeholder);
+            return;
+        }
+
+        const button = document.createElement("button");
+        button.textContent = btnConfig.value;
+        button.className = `calculator-button calculator-button--${btnConfig.type}`;
+
+        // Add data attributes for event handling
+        button.dataset.value = btnConfig.value;
+        button.dataset.type = btnConfig.type;
+
+        container.appendChild(button);
     });
 }
 
@@ -166,42 +174,94 @@ function divide(a, b) {
 // Main operate function
 function operate(operator, a, b) {
     const operations = {
-        '+': add,
-        '-': subtract,
-        '×': multiply,
-        '÷': divide
+        "+": add,
+        "-": subtract,
+        "×": multiply,
+        "÷": divide,
     };
-    
+
     return operations[operator](a, b);
 }
 
 // Display functions
 function updateDisplay(value) {
-    // TODO: Update calculator display
+    const display = document.getElementById("display");
+    if (display) {
+        display.textContent = value;
+    }
 }
 
 function clearCalculator() {
-    // TODO: Reset all calculator state
+    firstNumber = null;
+    secondNumber = null;
+    currentOperator = null;
+    shouldResetDisplay = false;
+    updateDisplay("0");
 }
 
 function handleNumber(num) {
-    // TODO: Handle number button clicks
+    const currentDisplay = document.getElementById("display").textContent;
+    
+    if (shouldResetDisplay) {
+        updateDisplay(num);
+        shouldResetDisplay = false;
+    } else if (currentDisplay === "0") {
+        updateDisplay(num);
+    } else {
+        updateDisplay(currentDisplay + num);
+    }
 }
 
 function handleOperator(op) {
-    // TODO: Handle operator button clicks
+    const currentDisplay = document.getElementById("display").textContent;
+    
+    if (firstNumber === null) {
+        firstNumber = parseFloat(currentDisplay);
+    } else if (currentOperator && !shouldResetDisplay) {
+        secondNumber = parseFloat(currentDisplay);
+        const result = operate(currentOperator, firstNumber, secondNumber);
+        updateDisplay(result);
+        firstNumber = parseFloat(result);
+    }
+    
+    currentOperator = op;
+    shouldResetDisplay = true;
 }
 
 function handleEquals() {
-    // TODO: Calculate and display result
+    const currentDisplay = document.getElementById("display").textContent;
+    
+    if (firstNumber !== null && currentOperator && !shouldResetDisplay) {
+        secondNumber = parseFloat(currentDisplay);
+        const result = operate(currentOperator, firstNumber, secondNumber);
+        updateDisplay(result);
+        
+        firstNumber = null;
+        secondNumber = null;
+        currentOperator = null;
+        shouldResetDisplay = true;
+    }
 }
 
 function handleDecimal() {
-    // TODO: Add decimal point handling
+    const currentDisplay = document.getElementById("display").textContent;
+    
+    if (shouldResetDisplay) {
+        updateDisplay("0.");
+        shouldResetDisplay = false;
+    } else if (!currentDisplay.includes(".")) {
+        updateDisplay(currentDisplay + ".");
+    }
 }
 
 function handleBackspace() {
-    // TODO: Remove last digit
+    const currentDisplay = document.getElementById("display").textContent;
+    
+    if (currentDisplay.length > 1) {
+        updateDisplay(currentDisplay.slice(0, -1));
+    } else {
+        updateDisplay("0");
+    }
 }
 
 // ============================================================================
@@ -212,56 +272,96 @@ function handleBackspace() {
 setTheme(getTheme());
 
 // Listen for system theme changes (only if user hasn't set preference)
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-    if (!localStorage.getItem('userTheme')) {
-        // No user preference, follow system
-        setTheme(e.matches ? 'dark' : 'light');
-    }
-});
+window
+    .matchMedia("(prefers-color-scheme: dark)")
+    .addEventListener("change", (e) => {
+        if (!localStorage.getItem("userTheme")) {
+            // No user preference, follow system
+            setTheme(e.matches ? "dark" : "light");
+        }
+    });
 
 // ============================================================================
 // EVENT LISTENERS
 // ============================================================================
 
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM fully loaded');
-    
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("DOM fully loaded");
+
     // Theme toggle button
-    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggle = document.getElementById("theme-toggle");
     if (themeToggle) {
-        themeToggle.addEventListener('click', () => {
+        themeToggle.addEventListener("click", () => {
             const newTheme = toggleTheme();
             console.log(`Theme changed to: ${newTheme}`);
-            
+
             // Re-create icons after theme change
             setTimeout(() => {
                 if (window.lucide) lucide.createIcons();
             }, 100);
         });
     }
-    
-    // Generate calculator buttons (when calculator is ready to be shown)
-    // generateCalculatorButtons();
-    
+
+    // Generate calculator buttons
+    generateCalculatorButtons();
+
+    // Shared routing function for button actions
+    function routeCalculatorAction(value, type) {
+        switch (type) {
+            case "number":
+            case "zero":
+                handleNumber(value);
+                break;
+            case "operator":
+                handleOperator(value);
+                break;
+            case "equals":
+                handleEquals();
+                break;
+            case "decimal":
+                handleDecimal();
+                break;
+            case "clear":
+                clearCalculator();
+                break;
+            case "backspace":
+                handleBackspace();
+                break;
+        }
+    }
+
     // Calculator button event listeners
-    // TODO: Add event listeners for calculator buttons
-    
-    // Keyboard support
-    // TODO: Add keyboard event listeners
-    
-    // Test button functionality (remove when calculator is implemented)
-    const button = document.getElementById('test-button');
-    const output = document.getElementById('output');
-    
-    if (button && output) {
-        let clickCount = 0;
-        
-        button.addEventListener('click', () => {
-            clickCount++;
-            output.textContent = `Button clicked ${clickCount} time${clickCount !== 1 ? 's' : ''}`;
-            console.log(`Click event fired: ${clickCount}`);
+    const calculatorContainer = document.getElementById("calculator-buttons");
+    if (calculatorContainer) {
+        calculatorContainer.addEventListener("click", (e) => {
+            if (!e.target.matches(".calculator-button")) return;
+            
+            routeCalculatorAction(e.target.dataset.value, e.target.dataset.type);
         });
     }
-    
-    console.log('Event listeners attached');
+
+    // Minimal keyboard-to-calculator mapping (only differences)
+    const KEYBOARD_MAP = {
+        "*": "×",
+        "/": "÷",
+        "Enter": "=",
+        "Escape": "C",
+        "Backspace": "←"
+    };
+
+    // Keyboard support
+    document.addEventListener("keydown", (e) => {
+        // Map keyboard key to calculator button value
+        const buttonValue = KEYBOARD_MAP[e.key] || e.key;
+        
+        // Find the button configuration from our single source of truth
+        const buttonConfig = CALCULATOR_BUTTONS.find(btn => btn.value === buttonValue);
+        
+        if (buttonConfig && buttonConfig.type !== "spacer") {
+            e.preventDefault();
+            routeCalculatorAction(buttonConfig.value, buttonConfig.type);
+        }
+    });
+
+    console.log("Event listeners attached");
 });
