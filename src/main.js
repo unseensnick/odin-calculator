@@ -145,24 +145,34 @@ function generateCalculatorButtons() {
 
 // Basic math operations
 function add(a, b) {
-    // TODO: Implement addition
+    return a + b;
 }
 
 function subtract(a, b) {
-    // TODO: Implement subtraction
+    return a - b;
 }
 
 function multiply(a, b) {
-    // TODO: Implement multiplication
+    return a * b;
 }
 
 function divide(a, b) {
-    // TODO: Implement division with zero check
+    if (b === 0) {
+        return "Error";
+    }
+    return a / b;
 }
 
 // Main operate function
 function operate(operator, a, b) {
-    // TODO: Call appropriate operation based on operator
+    const operations = {
+        '+': add,
+        '-': subtract,
+        '×': multiply,
+        '÷': divide
+    };
+    
+    return operations[operator](a, b);
 }
 
 // Display functions
