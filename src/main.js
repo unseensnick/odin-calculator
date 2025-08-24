@@ -125,6 +125,7 @@ let firstNumber = null;
 let secondNumber = null;
 let currentOperator = null;
 let shouldResetDisplay = false;
+let currentEquation = "";
 
 // Function to generate calculator buttons
 function generateCalculatorButtons() {
@@ -187,7 +188,8 @@ function operate(operator, a, b) {
 function updateDisplay(value) {
     const display = document.getElementById("display");
     if (display) {
-        display.textContent = value;
+        // Always show the current equation if it exists, otherwise show the value
+        display.textContent = currentEquation || value;
     }
 }
 
@@ -196,46 +198,77 @@ function clearCalculator() {
     secondNumber = null;
     currentOperator = null;
     shouldResetDisplay = false;
+    currentEquation = "";
     updateDisplay("0");
 }
 
 function handleNumber(num) {
-    const currentDisplay = document.getElementById("display").textContent;
-    
     if (shouldResetDisplay) {
-        updateDisplay(num);
+        // Start fresh after operator or result
+        if (currentEquation.includes("=")) {
+            // Start completely new equation after getting a result
+            currentEquation = num;
+        } else {
+            // Continue building equation after operator
+            currentEquation += num;
+        }
         shouldResetDisplay = false;
-    } else if (currentDisplay === "0") {
-        updateDisplay(num);
     } else {
-        updateDisplay(currentDisplay + num);
+        // Continue building current number
+        if (currentEquation === "0" || currentEquation.includes("=")) {
+            currentEquation = num;
+        } else {
+            currentEquation += num;
+        }
     }
+    
+    updateDisplay(currentEquation);
 }
 
 function handleOperator(op) {
-    const currentDisplay = document.getElementById("display").textContent;
-    
-    if (firstNumber === null) {
-        firstNumber = parseFloat(currentDisplay);
-    } else if (currentOperator && !shouldResetDisplay) {
-        secondNumber = parseFloat(currentDisplay);
-        const result = operate(currentOperator, firstNumber, secondNumber);
-        updateDisplay(result);
-        firstNumber = parseFloat(result);
+    // Get the current number from the equation (everything after the last operator or from start)
+    let currentNumber;
+    if (currentEquation.includes("=")) {
+        // Use result as the first number for new calculation
+        currentNumber = parseFloat(currentEquation.split("=")[1]);
+        currentEquation = currentNumber.toString();
+    } else {
+        // Find the current number being entered
+        const parts = currentEquation.split(/[\+\-\×\÷]/);
+        currentNumber = parseFloat(parts[parts.length - 1]);
     }
-    
+
+    if (firstNumber === null) {
+        firstNumber = currentNumber;
+        currentEquation += op;
+    } else if (currentOperator && !shouldResetDisplay) {
+        // Perform intermediate calculation
+        secondNumber = currentNumber;
+        const result = operate(currentOperator, firstNumber, secondNumber);
+        firstNumber = parseFloat(result);
+        currentEquation = result + op;
+    } else {
+        // Replace the last operator if user pressed multiple operators
+        currentEquation = currentEquation.slice(0, -1) + op;
+    }
+
     currentOperator = op;
     shouldResetDisplay = true;
+    updateDisplay(currentEquation);
 }
 
 function handleEquals() {
-    const currentDisplay = document.getElementById("display").textContent;
-    
     if (firstNumber !== null && currentOperator && !shouldResetDisplay) {
-        secondNumber = parseFloat(currentDisplay);
-        const result = operate(currentOperator, firstNumber, secondNumber);
-        updateDisplay(result);
+        // Get the second number from the current equation
+        const parts = currentEquation.split(/[\+\-\×\÷]/);
+        secondNumber = parseFloat(parts[parts.length - 1]);
         
+        const result = operate(currentOperator, firstNumber, secondNumber);
+        
+        // Complete the equation with the result
+        currentEquation += "=" + result;
+        updateDisplay(currentEquation);
+
         firstNumber = null;
         secondNumber = null;
         currentOperator = null;
@@ -244,24 +277,45 @@ function handleEquals() {
 }
 
 function handleDecimal() {
-    const currentDisplay = document.getElementById("display").textContent;
-    
+    // Get the current number being entered (after last operator or from start)
+    const parts = currentEquation.split(/[\+\-\×\÷=]/);
+    const currentNumber = parts[parts.length - 1];
+
     if (shouldResetDisplay) {
-        updateDisplay("0.");
+        if (currentEquation.includes("=")) {
+            currentEquation = "0.";
+        } else {
+            currentEquation += "0.";
+        }
         shouldResetDisplay = false;
-    } else if (!currentDisplay.includes(".")) {
-        updateDisplay(currentDisplay + ".");
+    } else if (!currentNumber.includes(".")) {
+        if (currentEquation === "0" || currentEquation.includes("=")) {
+            currentEquation = "0.";
+        } else {
+            currentEquation += ".";
+        }
     }
+    
+    updateDisplay(currentEquation);
 }
 
 function handleBackspace() {
-    const currentDisplay = document.getElementById("display").textContent;
-    
-    if (currentDisplay.length > 1) {
-        updateDisplay(currentDisplay.slice(0, -1));
-    } else {
-        updateDisplay("0");
+    // If showing complete equation with result, extract just the result
+    if (currentEquation.includes("=")) {
+        const result = currentEquation.split("=")[1];
+        currentEquation = result;
+        updateDisplay(currentEquation);
+        return;
     }
+
+    // Remove last character from equation
+    if (currentEquation.length > 1) {
+        currentEquation = currentEquation.slice(0, -1);
+    } else {
+        currentEquation = "0";
+    }
+    
+    updateDisplay(currentEquation);
 }
 
 // ============================================================================
@@ -335,8 +389,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (calculatorContainer) {
         calculatorContainer.addEventListener("click", (e) => {
             if (!e.target.matches(".calculator-button")) return;
-            
-            routeCalculatorAction(e.target.dataset.value, e.target.dataset.type);
+
+            routeCalculatorAction(
+                e.target.dataset.value,
+                e.target.dataset.type
+            );
         });
     }
 
@@ -344,19 +401,36 @@ document.addEventListener("DOMContentLoaded", () => {
     const KEYBOARD_MAP = {
         "*": "×",
         "/": "÷",
-        "Enter": "=",
-        "Escape": "C",
-        "Backspace": "←"
+        Enter: "=",
+        Escape: "C",
+        Backspace: "←",
+        // Numpad keys
+        NumpadDivide: "÷",
+        NumpadMultiply: "×",
+        NumpadSubtract: "-",
+        NumpadAdd: "+",
+        NumpadEnter: "=",
+        NumpadDecimal: ".",
     };
 
     // Keyboard support
     document.addEventListener("keydown", (e) => {
-        // Map keyboard key to calculator button value
-        const buttonValue = KEYBOARD_MAP[e.key] || e.key;
-        
+        let buttonValue = KEYBOARD_MAP[e.key] || e.key;
+
+        // Transform numpad number keys (Numpad0 → 0, Numpad1 → 1, etc.)
+        if (
+            e.key.startsWith("Numpad") &&
+            e.key.length === 7 &&
+            !isNaN(e.key.slice(-1))
+        ) {
+            buttonValue = e.key.slice(-1); // Extract the last character (the digit)
+        }
+
         // Find the button configuration from our single source of truth
-        const buttonConfig = CALCULATOR_BUTTONS.find(btn => btn.value === buttonValue);
-        
+        const buttonConfig = CALCULATOR_BUTTONS.find(
+            (btn) => btn.value === buttonValue
+        );
+
         if (buttonConfig && buttonConfig.type !== "spacer") {
             e.preventDefault();
             routeCalculatorAction(buttonConfig.value, buttonConfig.type);
