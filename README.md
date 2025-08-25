@@ -18,7 +18,6 @@ calculator/
 │       ├── 08.5-critical-refactor-single-source-of-truth.md
 │       └── 11-final-architecture-and-complete-features.md
 ├── .gitignore          # Git ignore rules
-├── CLAUDE.md           # AI assistant guidelines
 ├── README.md           # Project documentation
 ├── package.json        # NPM dependencies (Lucide icons)
 └── package-lock.json   # Dependency lock file
